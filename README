@@ -1,0 +1,23 @@
+Description:
+    The model generator creates stubs for a new model based upon an XSD file.  It will automatically add all the
+    appropriate relationships between models as well as create the migrations with the attributes already built.
+
+    The generator takes a complete file path to the XSD file as its argument.  
+
+    There are no additional parameters.
+
+    The generator creates model classe(s) in app/models, a test suite(s) in test/unit, test fixture(s) in
+    test/fixtures/singular_name.yml, and migration(s) in db/migrate.
+
+Examples:
+    ./script/generate model_from_xsd /tmp/sample.xsd /tmp/source.xml
+
+    With the following
+        This will create an Account model:
+            Model:      app/models/account.rb
+            Test:       test/unit/account_test.rb
+            Fixtures:   test/fixtures/accounts.yml
+            Migration:  db/migrate/XXX_add_accounts.rb
+
+
+After running all the classes have been created.  To load in the xml data you need to do is run rake db:migrate.  It will create the tables and load in the data.

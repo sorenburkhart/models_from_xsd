@@ -1,0 +1,52 @@
+8
+
+dir
+1
+svn://rubyforge.org/var/svn/models-from-xsd/lib
+svn://rubyforge.org/var/svn/models-from-xsd
+
+
+
+2007-06-21T01:21:27.543744Z
+1
+soren
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+d469821f-bc5e-4250-a73a-a71e70f12d7a
+
+model_from_xsd.rb
+file
+
+
+
+
+2009-07-07T16:05:50.000000Z
+9f03f362c161acfa7e3882ab0e23aca3
+2007-06-21T01:21:27.543744Z
+1
+soren
+
+sql_from_xml.rb
+file
+
+
+
+
+2009-07-07T16:05:50.000000Z
+68e7694d33ec8b735e28cacccdb22271
+2007-06-21T01:21:27.543744Z
+1
+soren
+
