@@ -115,6 +115,6 @@ class ModelsFromXsdGenerator < Rails::Generator::NamedBase
       opt.on("--skip-migration", 
              "Don't generate a migration file for this model") { |v| options[:skip_migration] = v }
       opt.on("--generate-coredata", 
-             "Generate Objective C") { |v| options[:generate_coredata] = v }
+             "Generate Core Data") { |v| options[:generate_coredata] = v }
     end
 end
