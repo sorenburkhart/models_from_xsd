@@ -41,23 +41,27 @@ class ModelsFromXsdGenerator < Rails::Generator::NamedBase
   
   def manifest
     record do |m|
-      generate_model(m, @model_from_xsd)
-      # Create final loader migration 
-      unless options[:skip_migration]
-        xsd_base_class = @model_from_xsd.name.to_s.pluralize.classify # Do the pluralize befores classify to eliminate incorrect class names due to plural form
-        create_sql_commands = Array.new
-        puts "Loading XML data to parse (this could take some time)..."
-        SqlFromXml.build_from_xml(@xml_file_path) {|sql| create_sql_commands << '    execute ("' + sql + '")'}
-        drop_sql_commands = Array.new
-        SqlFromXml.table_ids.each {|key, value| drop_sql_commands << "    execute (\"DELETE FROM #{key.pluralize} WHERE id <= #{value};\")"}
-        m.migration_template 'migration_loader_from_sql.rb', 'db/migrate',
-                             :assigns => {:migration_name => "LoaderFor#{xsd_base_class}",
-                                          :xsd_base_class => xsd_base_class,
-                                          :xml_file_path => @xml_file_path,
-                                          :create_sql_commands => create_sql_commands,
-                                          :drop_sql_commands => drop_sql_commands
-                                          },
-                             :migration_file_name => "LoaderFor#{xsd_base_class}".underscore
+      if options[:generate_coredata]
+        puts "Generate Objective C"
+      else
+        generate_model(m, @model_from_xsd)
+        # Create final loader migration 
+        unless options[:skip_migration]
+          xsd_base_class = @model_from_xsd.name.to_s.pluralize.classify # Do the pluralize befores classify to eliminate incorrect class names due to plural form
+          create_sql_commands = Array.new
+          puts "Loading XML data to parse (this could take some time)..."
+          SqlFromXml.build_from_xml(@xml_file_path) {|sql| create_sql_commands << '    execute ("' + sql + '")'}
+          drop_sql_commands = Array.new
+          SqlFromXml.table_ids.each {|key, value| drop_sql_commands << "    execute (\"DELETE FROM #{key.pluralize} WHERE id <= #{value};\")"}
+          m.migration_template 'migration_loader_from_sql.rb', 'db/migrate',
+                               :assigns => {:migration_name => "LoaderFor#{xsd_base_class}",
+                                            :xsd_base_class => xsd_base_class,
+                                            :xml_file_path => @xml_file_path,
+                                            :create_sql_commands => create_sql_commands,
+                                            :drop_sql_commands => drop_sql_commands
+                                            },
+                               :migration_file_name => "LoaderFor#{xsd_base_class}".underscore
+        end
       end
     end
   end
@@ -110,5 +114,7 @@ class ModelsFromXsdGenerator < Rails::Generator::NamedBase
       opt.separator 'Options:'
       opt.on("--skip-migration", 
              "Don't generate a migration file for this model") { |v| options[:skip_migration] = v }
+      opt.on("--generate-coredata", 
+             "Generate Objective C") { |v| options[:generate_coredata] = v }
     end
 end
