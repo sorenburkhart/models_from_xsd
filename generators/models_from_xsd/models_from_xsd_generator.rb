@@ -43,6 +43,7 @@ class ModelsFromXsdGenerator < Rails::Generator::NamedBase
     record do |m|
       if options[:generate_coredata]
         puts "Generate Objective C"
+        m.template
       else
         generate_model(m, @model_from_xsd)
         # Create final loader migration 
@@ -65,7 +66,18 @@ class ModelsFromXsdGenerator < Rails::Generator::NamedBase
       end
     end
   end
-
+  
+  def generate_coredata(m, xsd_model)
+    m.template 'coredat/modelTest.m',  File.join('test/unit', "#{xsd_model.name}test.m"), 
+               :assigns => {:fixtures => ([xsd_model.name] + xsd_model.has_one + xsd_model.has_many).collect {|f| ":"+f.to_s.pluralize},
+                            :class_name => xsd_model.name.to_s.pluralize.classify, 
+                            :table_name => xsd_model.name.to_s.pluralize,
+                            :belongs_to_assoc => xsd_model.belongs_to,
+                            :has_many_assoc => xsd_model.has_many,
+                            :required_attributes => xsd_model.required_attributes
+                            }
+  end
+  
   def generate_model(m, xsd_model)
     # Model class, unit test, and fixtures.
     m.template 'model.rb', File.join('app/models', "#{xsd_model.name}.rb"), 
