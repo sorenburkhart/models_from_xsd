@@ -20,7 +20,7 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 require 'rubygems'
-require 'active_support'
+require 'active_support/inflector'
 require 'rexml/document'
 
 class ModelFromXSD
@@ -43,9 +43,9 @@ class ModelFromXSD
   # Used for generating fixtures
   def default
     case data_type
-    when /.*:string/: "'Sample #{name} here'"
-    when /.*:int/: 1
-    when /.*:boolean/: true
+    when /.*:string/ then "'Sample #{name} here'"
+    when /.*:int/ then 1
+    when /.*:boolean/ then true
     else "'#{data_type}'"
     end
   end
@@ -53,13 +53,13 @@ class ModelFromXSD
   def self.build_from_xsd(xml, m = nil)
     xml = REXML::Document.new(xml) if xml.class == String
     xml.elements.each do | ele |
-      sym = ele.name.underscore.to_sym
+      sym = ActiveSupport::Inflector.underscore(ele.name).to_sym
       #puts "Inside #{ele.name}"
-      case ele.name.underscore.to_sym
+      case ActiveSupport::Inflector.underscore(ele.name).to_sym
       
       when :element
         #puts "Element #{ele.attributes["name"].underscore.to_sym}"
-        current_m = self.new(ele.attributes["name"].underscore.to_sym,
+        current_m = self.new(ActiveSupport::Inflector.underscore(ele.attributes["name"]).to_sym,
                              ele.attributes["minOccurs"],
                              ele.attributes["maxOccurs"])
         if ele.has_elements? 
@@ -74,7 +74,7 @@ class ModelFromXSD
           if m.nil?
             m = current_m
           else
-            m.attributes << self.new(ele.attributes["name"].underscore.to_sym,
+            m.attributes << self.new(ActiveSupport::Inflector.underscore(ele.attributes["name"]).to_sym,
                                      ele.attributes["minOccurs"],
                                      ele.attributes["maxOccurs"],
                                      ele.attributes["type"])
@@ -112,7 +112,7 @@ class ModelFromXSD
   
   # Make sure it is an attribute of the class (including foreign keys)
   def attribute?(a)
-    !(self.has_one + self.belongs_to).include?(a.name.to_sym) && !(self.has_many).include?(a.name.to_s.pluralize.to_sym)
+    !(self.has_one + self.belongs_to).include?(a.name.to_sym) && !(self.has_many).include?(ActiveSupport::Inflector.pluralize(a.name.to_s).to_sym)
   end  
   
   # Return the attributes that are required to create a class

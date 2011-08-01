@@ -20,7 +20,7 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 require 'rubygems'
-require 'active_support'
+require 'active_support/inflector'
 require 'rexml/document'
 
 class SqlFromXml
@@ -70,7 +70,7 @@ class SqlFromXml
     end
     
     # Build SQL Statement
-    sql = "INSERT INTO #{current_entry.table_name.pluralize} ("
+    sql = "INSERT INTO #{ActiveSupport::Inflector.pluralize(current_entry.table_name)} ("
     sql += "id"
     sql += ", #{current_entry.parent.table_name}_id" unless current_entry.parent.nil?
     sql += ", " + current_entry.attributes.keys.join(", ") unless current_entry.attributes.empty?

@@ -9,7 +9,7 @@ class SdnSqlFromXmlTest < Test::Unit::TestCase
     master_sql_file = File.dirname(__FILE__) + "/master_sdn_small.sql"
     
     File.open(output_sql_file,"w") do |file|
-      SqlFromXml.build_from_xml(input_xml_file) {|sql| puts sql; file << sql << "\n"}
+      SqlFromXml.build_from_xml(input_xml_file) {|sql| file << sql << "\n"}
     end
     assert files_match?(output_sql_file, master_sql_file), "Output sql did not match what was expected."
   end
